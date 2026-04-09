@@ -4,6 +4,7 @@ import { create } from "./create";
 import { getById } from "./get-by-id";
 import { deleteById } from "./delete-by-id";
 import { updateById } from "./update-by-id";
+import { setCompleted } from "./set-completed";
 
 export async function todosRoutes(app: FastifyInstance) {
   app.get("", getAll);
@@ -11,4 +12,5 @@ export async function todosRoutes(app: FastifyInstance) {
   app.get("/:id", getById);
   app.delete("/:id", deleteById);
   app.put("/:id", updateById);
+  app.patch("/:id/completed", setCompleted);
 }
