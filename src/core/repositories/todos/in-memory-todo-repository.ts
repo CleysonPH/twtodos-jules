@@ -1,6 +1,7 @@
 import type { Todo } from "@/core/types/todo";
 import type { TodoRepository } from "./";
 import { randomUUID } from "node:crypto";
+import type { PaginatedResponse } from "@/core/types/pagination";
 
 export class InMemoryTodoRepository implements TodoRepository {
   public items: Todo[] = [];
@@ -10,8 +11,24 @@ export class InMemoryTodoRepository implements TodoRepository {
     return todo || null;
   }
 
-  async getAll(): Promise<Todo[]> {
-    return this.items;
+  async getAll(params?: {
+    page?: number;
+    size?: number;
+  }): Promise<PaginatedResponse<Todo>> {
+    const page = params?.page || 1;
+    const size = params?.size || 20;
+
+    const start = (page - 1) * size;
+    const end = start + size;
+
+    const items = this.items.slice(start, end);
+
+    return {
+      items,
+      page,
+      size,
+      total: this.items.length,
+    };
   }
 
   async create(todo: Omit<Todo, "id">): Promise<Todo> {
