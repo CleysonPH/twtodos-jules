@@ -14,12 +14,10 @@ export async function setCompleted(request: FastifyRequest, reply: FastifyReply)
   const paramResult = paramSchema.safeParse(request.params);
   const bodyResult = bodySchema.safeParse(request.body);
 
-  if (!paramResult.success) {
-    return reply.status(400).send({ error: "Invalid request parameters" });
-  }
-
-  if (!bodyResult.success) {
-    return reply.status(400).send({ error: "Invalid request body" });
+  if (!paramResult.success || !bodyResult.success) {
+    return reply.status(400).send({
+      error: !paramResult.success ? "Invalid request parameters" : "Invalid request body",
+    });
   }
 
   const todoRepository = makeTodoRepository();
